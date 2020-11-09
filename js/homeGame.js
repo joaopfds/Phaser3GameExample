@@ -48,6 +48,10 @@ class HomeGame extends Phaser.Scene
     {
         this.add.image(0,0,"home").setOrigin(0,0);
         let btnPlay = this.add.image(450,270,"btnPlay").setOrigin(0,0);
+        this.buttonText = this.add.text(480,278, "INICIAR", {
+            fontSize: "30px",
+            fill: "#ffff",
+          });
         btnPlay.setInteractive();
 
         
@@ -57,7 +61,7 @@ class HomeGame extends Phaser.Scene
         //Adicionar o clique do botao
         btnPlay.on("pointerdown", () => this.scene.start("PlayGame"));
 
-        let btnControls = this.add.image(450,470,"btnPlay").setOrigin(0,0);
+        /*let btnControls = this.add.image(450,470,"btnPlay").setOrigin(0,0);
         btnControls.setInteractive();
 
         
@@ -65,6 +69,6 @@ class HomeGame extends Phaser.Scene
         
 
         //Adicionar o clique do botao
-        btnControls.on("pointerdown", () => this.scene.start("Contorles"));
+        btnControls.on("pointerdown", () => this.scene.start("Contorles"));*/
     }
 }

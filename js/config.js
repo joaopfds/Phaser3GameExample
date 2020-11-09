@@ -5,7 +5,7 @@ window.onload = function()
     let gameConfig = 
     {
         scale:{
-            width:1160,
+            width:1150,
             height:630,
             autoCenter:Phaser.Scale.CENTER_BOTH
         },
