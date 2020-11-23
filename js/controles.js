@@ -18,6 +18,10 @@ class Contorles extends Phaser.Scene
         this.add.image(150,120,"kyboard").setOrigin(0,0);
 
         let btnRturn = this.add.image(450,470,"btnPlay").setOrigin(0,0);
+        this.buttonText = this.add.text(505,478, "MENU", {
+            fontSize: "30px",
+            fill: "#ffff",
+          });
         btnRturn.setInteractive();
 
         

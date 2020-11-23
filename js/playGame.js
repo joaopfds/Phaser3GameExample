@@ -11,16 +11,32 @@ class PlayGame extends Phaser.Scene
         this.upTiro = 0
         this.inimigos = 10
         this.vidas = 1
-        
+        this.tempo= 120
+        this.timer = 118
+        this.txtTempo
+        this.contador
+        this.life
+        this.o1 = 0;
+        this.o2 = 0;
+        this.o3 = 0;
+        this.o4 = 0;this.o5 = 0;
+        this.o6 = 0;this.o7 = 0;this.o8 = 0;this.o9 = 0;this.o10 = 0;
+        this.tema;
     }
     
     preload()
-    {
+    {  
         this.load.tilemapTiledJSON('map','assets/untitled.json'); 
+       
     }
 
     create()
-    {   
+    {   this.o1 = 0;
+        this.o2 = 0;
+        this.o3 = 0;
+        this.o4 = 0;this.o5 = 0;
+        this.o6 = 0;this.o7 = 0;this.o8 = 0;this.o9 = 0;this.o10 = 0;
+        this.inimigos = 10;
         this.map = this.make.tilemap({ key: 'map' });
         this.tileset = this.map.addTilesetImage("tileset (2)", "tiles");
         this.ground = this.map.createStaticLayer("ground", this.tileset, 0, 0);
@@ -28,7 +44,7 @@ class PlayGame extends Phaser.Scene
         this.ground3 =this.map.createStaticLayer("towers", this.tileset, 0, 0); 
         this.ground4 = this.map.createStaticLayer("towers1", this.tileset, 0, 0);
         this.ground5 = this.map.createStaticLayer("objectcollider2", this.tileset, 0, 0);
-        this.inicio = this.physics.add.sprite(600, 300,"inicio").setDepth(10);
+        //this.inicio = this.physics.add.sprite(600, 300,"inicio").setDepth(10);
 
         // ----------------------- inimigos e suas movimentaçoes ---------------
         this.ovni1 = this.physics.add.sprite(600, 600, 'ovni').setDepth(1);
@@ -44,12 +60,13 @@ class PlayGame extends Phaser.Scene
         this.ovni11 = this.physics.add.sprite(1800, 300, 'ovniBoss');
         this.ovni12 = this.physics.add.sprite(3200, 550, 'ovniBoss');
         this.bala = this.physics.add.sprite('bullet');
-        
+        this.bala2 = this.physics.add.sprite('bullet');
+        this.life = this.physics.add.sprite(400, 400, 'life');
         this.et3 = [this.ovni1,this.ovni6,this.ovni8,this.ovni7,this.ovni10,this.ovni2,this.vovni3,this.ovni4,this.ovni5,this.ovni11,this.ovni12];
             this.tweens.add({
                 targets: this.et3,
                 y: 800,
-                duration: 4000,
+                duration: 3000,
                 ease: "Power2",
                 yoyo: true,
                 loop: -1
@@ -61,8 +78,6 @@ class PlayGame extends Phaser.Scene
         this.player = this.physics.add.sprite(300,300, "player");
         this.physics.add.collider(this.player, this.ground2);
 
-        //logo = this.physics.add.sprite(300,300, "kbum");
-        //destruiçao = this.physics.add.sprite("kbum");
         this.ammo1 = this.physics.add.sprite(3200,1350, 'ammo');
         this.ammo2 = this.physics.add.sprite(500,800, 'ammo');
         
@@ -83,7 +98,7 @@ class PlayGame extends Phaser.Scene
         this.camera.startFollow(this.player);
         this.camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-        this.textTela = this.add.text(20, 490,'HUD', {
+        this.textTela = this.add.text(20, 460,'HUD', {
             fontFamily: 'Arial, Gadget, sans-serif',
             fontSize: '22px',
             fontStyle: 'bolder',
@@ -97,36 +112,54 @@ class PlayGame extends Phaser.Scene
             this.graphics.lineStyle(2, 0x00ff00, 1);
             this.graphics.strokeRect(200, 200, this.cameras.main.deadzone.width, this.cameras.main.deadzone.height);      
         }
-        //this.physics.add.collider(this.ammo2, this.player, this.ganhaBala);
-        //this.physics.add.collider(this.ammo1, this.player, this.ganhaBala);
+        
         // ----------------------------------------------------------------------------------------------------
+        this.contador = this.time.addEvent({delay:1000,repeat: this.tempo});
+
+        this.tema = this.sound.add("tema", {volume: 0.1});
+        this.tema.play();
+        this.damage = this.sound.add("disparo", {
+            loop: false,
+            volume: 1,
+        });
+        this.relando = this.sound.add("life", {
+            loop: false,
+            volume: 1,
+        });
+
+        this.dest = this.sound.add("destruct", {
+            loop: false,
+            volume: 1,
+        });
+
+        
     }
 
+
     update() {
+    // --------------------HUD--------------------------------
         this.textTela.setText([
 
             '     HUD' + '\n' +
             'Tiros: ' + this.tiro 
             + '\n' + 'Vida: ' + this.vidas
-            + '\n' + 'inimigos: ' + this.inimigos,
+            + '\n' + 'Inimigos: ' + this.inimigos 
+            + '\n' + 'Tempo: ' + (120 - this.tempo)  
         ]);
+    // ----------- variaveis/fisica player -------------------------
         var permitiro = true;   
         this.player.body.velocity.set(0);
         this.player.body.acceleration.set(0);
         this.player.setAngle(0);
         this.cursors = this.input.keyboard.createCursorKeys();
         this.ladoTiro = 500;
-        if (this.cursors.space.isDown) {
-            this.inicio.disableBody(true, true);
-        }
-      // -------- player movimentacaes ---------------------
+
+    // -------- player movimentacaes ----------------------------
         if (this.cursors.left.isDown) {
-          //permitiro = false;
           this.ladoTiro = -500;
           this.player.body.setVelocityX(-250);
           this.player.setAngle(-180);
         } else if (this.cursors.right.isDown) {
-          //permitiro = false;
           this.ladoTiro = 500;
           this.player.body.setVelocityX(250);
         } else if (this.cursors.up.isDown) {
@@ -159,35 +192,75 @@ class PlayGame extends Phaser.Scene
         } else if (this.cursors.left.isDown && this.cursors.right.isDown ) {
             this.player.body.setVelocity(0);
         }
-      //------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------
       
-      // ------------ ---------------------HUD -----------------------------------------------
         
-        //-------------------------------------------------------------------------------------  
+    //-------------------------- disparos/Ataques ---------------------------------------
       
-        if(this.cursors.space.isDown && this.playerPodeAtirar == 1 && this.vidas != 0 && permitiro == true){ 
-             
+        if(this.cursors.space.isDown && this.playerPodeAtirar == 1 && permitiro == true){ 
             this.bala = this.physics.add.sprite(this.player.x+37, this.player.y+5, 'bullet');
             this.bala.setVelocityX(this.ladoTiro);
+            this.damage.play();
             this.playerPodeAtirar = 0; 
             this.ataque = true;      
             this.tiro -=1;
           if (this.tiro < 1){
             this.playerPodeAtirar = 0;
           }   
-          //this.physics.add.collider(this.et3, bala, hitDeath, null, this);
-      
-        
         }
+
         if(this.cursors.space.isUp && this.tiro > 0){
             this.playerPodeAtirar = 1;
-          /*if(ataque == true ) {
-            bala = this.physics.add.sprite(ovni1.x, ovni1.y, 'bullet');
-            bala.setVelocityX(-500);
-            ataque = false*/
         }
+
+        if (this.tempo == this.timer){
+            if(this.o1 == 0){
+                this.bala2 = this.physics.add.sprite(this.ovni1.x, this.ovni1.y, 'bullet');
+                this.bala2.setVelocityX(-400);
+            }
+            if(this.o2 == 0){
+                this.bala2 = this.physics.add.sprite(this.ovni2.x, this.ovni2.y, 'bullet');
+                this.bala2.setVelocityX(-400);
+            }
+            if(this.o3 == 0){
+                this.bala2 = this.physics.add.sprite(this.ovni3.x, this.ovni3.y, 'bullet');
+                this.bala2.setVelocityX(-400);
+            }
+            if(this.o4 == 0){
+                this.bala2 = this.physics.add.sprite(this.ovni4.x, this.ovni4.y, 'bullet');
+                this.bala2.setVelocityX(-400);
+            }
+            if(this.o5 == 0){
+                this.bala2 = this.physics.add.sprite(this.ovni5.x, this.ovni5.y, 'bullet');
+                this.bala2.setVelocityX(-400);
+            }
+            if(this.o6 == 0){
+                this.bala2 = this.physics.add.sprite(this.ovni6.x, this.ovni6.y, 'bullet');
+                this.bala2.setVelocityX(-400);
+            }
+            if(this.o7 == 0){
+                this.bala2 = this.physics.add.sprite(this.ovni7.x, this.ovni7.y, 'bullet');
+                this.bala2.setVelocityX(-400);
+            }
+            if(this.o8 == 0){
+                this.bala2 = this.physics.add.sprite(this.ovni8.x, this.ovni8.y, 'bullet');
+                this.bala2.setVelocityX(-400);
+            }
+            if(this.o9 == 0){
+                this.bala2 = this.physics.add.sprite(this.ovni9.x, this.ovni9.y, 'bullet');
+                this.bala2.setVelocityX(-400);
+            }
+            if(this.o10 == 0){
+                this.bala2 = this.physics.add.sprite(this.ovni10.x, this.ovni10.y, 'bullet');
+                this.bala2.setVelocityX(-400);
+            }
+
+            this.timer = this.tempo - 6;
+        }
+
         
-        // ------ colisao do tiro com os inimigos ------
+    // ----------------------- colisao do tiro com os inimigos -----------------------------------
+        this.physics.add.overlap(this.bala2, this.player, this.hit, null, this);
         this.physics.add.collider(this.bala, this.ovni1, this.hitDeath, null, this);  
         this.physics.add.collider(this.bala, this.ovni2, this.hitDeath, null, this);
         this.physics.add.collider(this.bala, this.ovni3, this.hitDeath, null, this); 
@@ -200,40 +273,101 @@ class PlayGame extends Phaser.Scene
         this.physics.add.collider(this.bala, this.ovni10, this.hitDeath, null, this);
         this.physics.add.collider(this.bala, this.ovni11, this.kill, null, this);
         this.physics.add.collider(this.bala, this.ovni12, this.kill, null, this);
-        //this.physics.add.collider(this.bala, et3, hitDeath, null);
-        
-        this.physics.add.collider(this.ammo2, this.player, this.hit, null, this);
-        this.physics.add.collider(this.ammo1, this.player, this.hit, null, this);
+        this.physics.add.collider(this.life, this.player, this.ganhaVida, null, this);        
+        this.physics.add.collider(this.ammo2, this.player, this.ganhaBala, null, this);
+        this.physics.add.collider(this.ammo1, this.player, this.ganhaBala, null, this);
         this.physics.add.collider(this.bala, this.ground2, this.someBala, null, this);
+        this.physics.add.collider(this.bala2, this.ground2, this.someBala, null, this);
 
+        this.tempo = this.contador.repeatCount;
+        //this.txtTempo.text = this.contador.repeatCount;
+    
+    // ---------------------- Condicoes de termino -------------------------------
+        if(this.inimigos == 0){
+            this.player.disableBody(true, true);
+            this.tiro = 10;
+            this.vidas = 1;
+            this.tema.stop();
+            this.scene.start("EndGame");
+
+        }
+
+        if(this.vidas == 0 | this.tempo == 0 ){
+            this.player.disableBody(true, true);
+            
+            this.tiro = 10;
+            this.vidas = 1;
+            this.tema.stop();
+            this.scene.start("EndGame");
+        }
     }
 
-    hitDeath (bala, ovni){
-  
-        ovni.disableBody(true, true);
-        bala.disableBody(true, true);
+    //------------- Funcoes -------------------------
+
+    hitDeath = function (bala, ovni){
+        this.dest.play();
+        ovni.destroy();
+        bala.destroy();
         this.inimigos -= 1;
-        if(this.inimigos == 0){
-          this.player.disableBody(true, true);
-          this.scene.restart();
-          this.inimigos = 10;
-          this.scene.start("HomeGame");
+        /*kabum.disableBody(true,true);
+        player.anims.play('turn');
+        gameOver = true;*/
+        if (ovni == this.ovni1){
+            this.o1 = 1;
+        }
+        if (ovni == this.ovni2){
+            this.o2 = 1;
+        }
+        if (ovni == this.ovni3){
+            this.o3 = 1;
+        }
+        if (ovni == this.ovni4){
+            this.o4 = 1;
+        }
+        if (ovni == this.ovni5){
+            this.o5 = 1;
+        }
+        if (ovni == this.ovni6){
+            this.o6 = 1;
+        }
+        if (ovni == this.ovni7){
+            this.o7 = 1;
+        }
+        if (ovni == this.ovni8){
+            this.o8 = 1;
+        }
+        if (ovni == this.ovni9){
+            this.o9 = 1;
+        }
+        if (ovni == this.ovni10){
+            this.o10 = 1;
         }
         /*kabum.disableBody(true,true);
         player.anims.play('turn');
         gameOver = true;*/
       
     }
-    hit = function(ammo){
+    ganhaBala = function(ammo){
         this.tiro += 15;
         ammo.disableBody(true,true);
     }
-      
-    someBala(ammo){
-        ammo.disableBody(true,true);
+
+    hit = function(ammo){
+        this.vidas -= 1;
+        ammo.destroy();
     }
       
-    kill(bala,ovni){
+    someBala = function(ammo){
+        ammo.disableBody(true,true);
+    }
+
+    ganhaVida = function(med){
+        this.relando.play();
+        this.vidas += 1;
+        med.destroy();
+    }
+      
+    kill = function(bala,ovni){
         ovni.body.setVelocity(0);
         ovni.body.acceleration.set(0);
         this.inimigoVida = this.inimigoVida - 1; 
@@ -242,6 +376,5 @@ class PlayGame extends Phaser.Scene
           ovni.disableBody(true, true);
           this.inimigoVida = 5 
         }
-      
     }
 }
