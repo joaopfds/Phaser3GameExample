@@ -17,7 +17,10 @@ class HomeGame extends Phaser.Scene
             frameWidth: 100,
             frameHeight: 100,
         });
-        this.load.image("bullet", "assets/shmup-bullet.png");
+        this.load.spritesheet("bullet", "assets/shmup-bullet.png", {
+            frameWidth: 40,
+            frameHeight: 40,
+        });
         this.load.spritesheet("life", 'assets/vida.png', {
             frameWidth: 80,
             frameHeight: 80,
@@ -32,8 +35,8 @@ class HomeGame extends Phaser.Scene
             frameHeight: 90,
         });
         this.load.spritesheet('ovniBoss', 'assets/blue-ufo.png', {
-            frameWidth: 500,
-            frameHeight: 100,
+            frameWidth: 200,
+            frameHeight: 70,
         });
         this.load.audio("tema", "assets/audio/theme.mp3");
         this.load.audio("disparo", "assets/audio/shoot.mp3");
@@ -46,8 +49,8 @@ class HomeGame extends Phaser.Scene
     create()
     {   
         this.add.image(0,0,"home").setOrigin(0,0);
-        let btnPlay = this.add.image(450,270,"btnPlay").setOrigin(0,0);
-        this.buttonText = this.add.text(500,278, "JOGAR", {
+        let btnPlay = this.add.image(450,370,"btnPlay").setOrigin(0,0);
+        this.buttonText = this.add.text(500,378, "JOGAR", {
             fontSize: "30px",
             fill: "#ffff",
         });
@@ -56,12 +59,12 @@ class HomeGame extends Phaser.Scene
         btnPlay.on("pointerdown", () => this.scene.start("PlayGame"));
 
         
-        let btnAbout = this.add.image(450,370,"btnPlay").setOrigin(0,0);
+        /*let btnAbout = this.add.image(450,370,"btnPlay").setOrigin(0,0);
         this.buttonText = this.add.text(500,378, "JOGAR", {
             fontSize: "30px",
             fill: "#ffff",
         });
-        btnAbout.setInteractive();
+        btnAbout.setInteractive();*/
 
         
         //this.add.image(320,230,"").setOrigin(0,0);

@@ -31,11 +31,18 @@ class EndGame extends Phaser.Scene
         {
             this.add.text(150,50,this.mensagem, {fontSize:'22px', fill:'purple'});
         }*/
-        if(game.scene.keys["PlayGame"].inimigos != 0){
+        this.t = (120 - game.scene.keys["PlayGame"].tempo);
+        if(game.scene.keys["PlayGame"].inimigos > 0){
             this.add.text(360,300,"Você falhou, tente novamente", {fontSize:'22px', fill:'purple', font: 'bold 25px Arial',backgroundColor: "gray",});
         }
         else{
-            this.add.text(360,300,"Seu tempo foi de: " + (120 - game.scene.keys["PlayGame"].tempo) + ' Segundos !', {fontSize:'22px', fill:'purple', font: 'bold 25px Arial',backgroundColor: "gray",});
+            if( this.t > 60){
+                this.add.text(360,300,"Seu tempo foi de: 1:" + (this.t - 60) + ' Segundos !', {fontSize:'22px', fill:'purple', font: 'bold 25px Arial',backgroundColor: "gray",});    
+            }
+            else{
+                this.add.text(360,300,"Seu tempo foi de: " + this.t + ' Segundos !', {fontSize:'22px', fill:'purple', font: 'bold 25px Arial',backgroundColor: "gray",});
+            }
+            
         }
         
         game.scene.keys["PlayGame"].tempo = 120;
